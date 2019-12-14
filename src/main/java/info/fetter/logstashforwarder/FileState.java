@@ -83,8 +83,8 @@ public class FileState {
 		}
 	}
 
-	public File getFile() {
-		return file;
+	public File getFile() throws IOException {
+		return file.getCanonicalFile();
 	}
 
 	public long getLastModified() {

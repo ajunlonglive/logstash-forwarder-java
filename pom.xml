@@ -48,10 +48,10 @@
 							<mainClass>info.fetter.logstashforwarder.Forwarder</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${prefix.revision}</Implementation-Build>
-							<buildtime>${timestamp}</buildtime>
-						</manifestEntries>
+						<!--<manifestEntries>-->
+							<!--<Implementation-Build>${prefix.revision}</Implementation-Build>-->
+							<!--<buildtime>${timestamp}</buildtime>-->
+						<!--</manifestEntries>-->
 					</archive>
 				</configuration>
 			</plugin>
@@ -95,7 +95,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -133,6 +133,11 @@
 		</pluginManagement>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.61</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

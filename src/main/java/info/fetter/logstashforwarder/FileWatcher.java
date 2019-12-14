@@ -224,7 +224,7 @@ public class FileWatcher {
 	}
 
 	private void addSingleFile(String fileToWatch, Event fields, long deadTime, Multiline multiline, Filter filter) throws Exception {
-		logger.info("Watching file : " + new File(fileToWatch).getCanonicalPath());
+		logger.info("Checking file : " + new File(fileToWatch).getCanonicalPath());
 		String directory = FilenameUtils.getFullPath(fileToWatch);
 		String fileName = FilenameUtils.getName(fileToWatch);
 		IOFileFilter fileFilter = FileFilterUtils.and(
@@ -269,7 +269,7 @@ public class FileWatcher {
 
 	private void addFileToWatchMap(Map<File,FileState> map, File file, Event fields, Multiline multiline, Filter filter) {
 		try {
-			FileState state = new FileState(file);
+			FileState state = new FileState(file.getCanonicalFile());
 			state.setFields(fields);
 			int signatureLength = (int) (state.getSize() > maxSignatureLength ? maxSignatureLength : state.getSize());
 			state.setSignatureLength(signatureLength);
@@ -278,7 +278,7 @@ public class FileWatcher {
 			logger.trace("Setting signature of size : " + signatureLength + " on file : " + file + " : " + signature);
 			state.setMultiline(multiline);
 			state.setFilter(filter);
-			map.put(file, state);
+			map.put(file.getCanonicalFile(), state);
 		} catch(IOException e) {
 			logger.error("Caught IOException in addFileToWatchMap : " +
 						 e.getMessage());

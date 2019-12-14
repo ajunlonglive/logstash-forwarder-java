@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -66,7 +67,7 @@ public abstract class Reader {
 		Event event = new Event(fields);
 		event.addField("file", fileName)
 		.addField("offset", pos)
-		.addField("line", line)
+		.addField("message", new String(line))
 		.addField("host", hostname);
 		eventList.add(event);
 	}
@@ -74,7 +75,7 @@ public abstract class Reader {
 	protected void addEvent(String fileName, Event fields, long pos, String line) throws IOException {
 		Event event = new Event(fields);
 		event.addField("file", fileName)
-		.addField("offset", pos)
+		.addField("message", pos)
 		.addField("line", line)
 		.addField("host", hostname);
 		eventList.add(event);

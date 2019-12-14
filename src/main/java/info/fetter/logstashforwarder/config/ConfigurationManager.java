@@ -33,7 +33,7 @@ public class ConfigurationManager {
 	public ConfigurationManager(String configFilePath) {
 		this(new File(configFilePath));
 	}
-	
+
 	public ConfigurationManager(File file) {
 		configFile = file;
 		mapper = new ObjectMapper();

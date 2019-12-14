@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Event {
-	private Map<String,byte[]> keyValues = new HashMap<String,byte[]>(10);
+	private Map<String,Object> keyValues = new HashMap<String,Object>(10);
 	
 	public Event() {
 	}
@@ -39,26 +39,26 @@ public class Event {
 		}
 	}
 	
-	public Event addField(String key, byte[] value) {
+//	public Event addField(String key, byte[] value) {
+//		keyValues.put(key, value);
+//		return this;
+//	}
+	
+	public Event addField(String key, String value) throws UnsupportedEncodingException {
 		keyValues.put(key, value);
 		return this;
 	}
 	
-	public Event addField(String key, String value) throws UnsupportedEncodingException {
-		keyValues.put(key, value.getBytes());
-		return this;
-	}
-	
 	public Event addField(String key, long value) throws UnsupportedEncodingException {
-		keyValues.put(key, String.valueOf(value).getBytes());
+		keyValues.put(key, value);
 		return this;
 	}
 	
-	public Map<String,byte[]> getKeyValues() {
+	public Map<String,Object> getKeyValues() {
 		return keyValues;
 	}
 	
-	public byte[] getValue(String fieldName) {
+	public Object getValue(String fieldName) {
 		return keyValues.get(fieldName);
 	}
 }

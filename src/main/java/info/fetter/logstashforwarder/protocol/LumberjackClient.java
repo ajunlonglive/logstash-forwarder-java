@@ -212,7 +212,7 @@ public class LumberjackClient implements ProtocolAdapter {
 			sendWindowSizeFrame(numberOfEvents);
 			List<Map<String,byte[]>> keyValuesList = new ArrayList<Map<String,byte[]>>(numberOfEvents);
 			for(Event event : eventList) {
-				keyValuesList.add(event.getKeyValues());
+//				keyValuesList.add(event.getKeyValues());
 			}
 			sendCompressedFrame(keyValuesList);
 			while(readAckFrame() < (sequence - 1) ) {}

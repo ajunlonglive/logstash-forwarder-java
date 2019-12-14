@@ -1,62 +1,73 @@
-# logstash-forwarder-java
+# logstash-forwarder-java(tcp-input)
 
-## What is this ?
+Forked from https://github.com/didfet/logstash-forwarder-java
 
-Logstash-forwarder-java is a log shipper program written in java. This is in fact a java version of [logstash-forwarder](https://github.com/elasticsearch/logstash-forwarder) by jordansissel.
-Here are a few features of this program :
-  - compatible with Java 5 runtime
-  - lightweight : package size is ~2MB and memory footprint ~8MB
-  - configuration compatible with logstash-forwarder
-  - lumberjack output (including zlib compression)
+Logstash Lumberjack input is not robust enough, this fork replaced Lumberjack protocol to plain TCP.
 
-## Why ?
+## Example
 
-Logstash-forwarder is written in go. This programming language is not available on all platforms (for example AIX), that's why a java version is more portable.
+### Logstash pipelines
 
-Logstash runs on java and provides a lumberjack output, but the file input doesn't run on all plaforms (for example AIX) and logstash requires a recent JVM. Moreover Logstash is heavier : it is a big package and uses more system resources.
+```
+input {
+    tcp {
+        port => 5055
+        codec => json_lines
+        #ssl_cert => "/etc/logstash/server.crt"
+        #ssl_certificate_authorities => "/etc/logstash/ca.crt"
+        #ssl_enable => true
+        #ssl_key => "/etc/logstash/server.key"
+        #ssl_key_passphrase => "${TCP_KEY_PASS}"
+        #ssl_verify => false
+        tcp_keep_alive => true
+    }
+}
 
-So logstash-forwarder-java is a solution for those who want a portable, lightweight log shipper for their ELK stack.
+filter {
+}
 
-## How to install it ?
-
-Download one of the following archives :
-  - [logstash-forwarder-java-0.2.4-bin.zip](https://github.com/didfet/logstash-forwarder-java/releases/download/0.2.4/logstash-forwarder-java-0.2.4-bin.zip)
-  - [logstash-forwarder-java-0.2.4-bin.tar.gz](https://github.com/didfet/logstash-forwarder-java/releases/download/0.2.4/logstash-forwarder-java-0.2.4-bin.tar.gz)
-  - [logstash-forwarder-java-0.2.4-bin.tar.bz2](https://github.com/didfet/logstash-forwarder-java/releases/download/0.2.4/logstash-forwarder-java-0.2.4-bin.tar.bz2)
-
-Or download the maven project and run maven package. Then you can install one of the archives located in the target directory.
-
-## How to run it ?
+output {
+   stdout{} 
+}
+```
+### Run logstash-forwarder
 
 Just run this command :
 
     java -jar logstash-forwarder-java-X.Y.Z.jar -config /path/to/config/file.json
 
-For help run :
+### Run logstash-forwarder with embedded JRE
 
-    java -jar logstash-forwarder-java-X.Y.Z.jar -help
+Go to [https://github.com/medcl/logstash-forwarder-java/releases/tag/TCP-Forwarder](https://github.com/medcl/logstash-forwarder-java/releases/tag/TCP-Forwarder)
 
-## Differences with logstash-forwarder
+1. Download `logstash-forwarder-java.zip`, unzip it
+
+2. Download related JDK to `logstash-forwarder-java` folder, unzip it, `7z x jdk8u232-b09-jre-<OS>.7z`
+
+3. Change `run.sh`, update JDK path
+
+4. Update `config.json`, with your server and file path
+
+5. Run `run.sh`
+
+For more JRE, download from here:
+
+- https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot
 
 ### Configuration
 
-The configuration file is the same (json format), but there are a few differences :
+For help run `java -jar logstash-forwarder-java-X.Y.Z.jar -help`:
+
+  - help
   - the ssl ca parameter points to a java [keystore](https://github.com/didfet/logstash-forwarder-java/blob/master/HOWTO-KEYSTORE.md) containing the root certificate of the server, not a PEM file
   - comments are C-style comments
   - multiline support with attributes "pattern", "negate" (true/false) and "what" (previous/next) (version 0.2.5)
   - filtering support with attributes "pattern" and "negate" (true/false) (version 0.2.5)
-
-### Command-line options
-
-Some options are the same :
   - config (but only for a file, not a directory)
   - quiet
   - idle-timeout (renamed idletimeout)
   - spool-size (renamed spoolsize)
   - tail
-  - help
-
-There are a few more options :
   - debug : turn on debug logging level
   - trace : turn on trace logging level
   - signaturelength : size of the block used to compute the checksum

@@ -4,3 +4,5 @@
 /state2.json
 .idea/
 logstash-forwarder-java.iml
+.DS_Store
+.logstash-forwarder-java

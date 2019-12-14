@@ -46,7 +46,7 @@ public class FileReader extends Reader {
 		super(spoolSize);
 	}
 
-	public int readFiles(Collection<FileState> fileList) throws AdapterException {
+	public int readFiles(Collection<FileState> fileList) throws AdapterException, IOException {
 		int eventCount = 0;
 		if(logger.isTraceEnabled()) {
 			logger.trace("Reading " + fileList.size() + " file(s)");
@@ -70,7 +70,7 @@ public class FileReader extends Reader {
 		return eventCount; // Return number of events sent to adapter
 	}
 
-	private int readFile(FileState state, int spaceLeftInSpool) {
+	private int readFile(FileState state, int spaceLeftInSpool) throws IOException {
 		File file = state.getFile();
 		long pointer = state.getPointer();
 		int numberOfEvents = 0;
@@ -120,7 +120,11 @@ public class FileReader extends Reader {
 				}
 			}
 		} catch(IOException e) {
-			logger.warn("Exception raised while reading file : " + state.getFile(), e);
+			try {
+				logger.warn("Exception raised while reading file : " + state.getFile(), e);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -208,7 +212,11 @@ public class FileReader extends Reader {
 			}
 			reader.seek(pos); // Ensure we can re-read if necessary
 		} catch(IOException e) {
-			logger.warn("Exception raised while reading file : " + state.getFile(), e);
+			try {
+				logger.warn("Exception raised while reading file : " + state.getFile(), e);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return pos;
 	}

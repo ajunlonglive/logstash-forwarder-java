@@ -17,6 +17,8 @@ package info.fetter.logstashforwarder.config;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -27,8 +29,8 @@ import info.fetter.logstashforwarder.Filter;
 import java.io.UnsupportedEncodingException;
 
 public class FilesSection {
-	private List<String> paths;
-	private Map<String,String> fields;
+	private List<String> paths=new ArrayList<String>();
+	private Map<String,String> fields=Collections.emptyMap();
 	@JsonProperty("dead time")
 	private String deadTime = "24h";
 	private Multiline multiline;

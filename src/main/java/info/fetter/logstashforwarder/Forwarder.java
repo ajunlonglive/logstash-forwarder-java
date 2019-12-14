@@ -17,34 +17,19 @@ package info.fetter.logstashforwarder;
  *
  */
 
-import static org.apache.log4j.Level.*;
+import info.fetter.logstashforwarder.config.ConfigurationManager;
+import info.fetter.logstashforwarder.config.FilesSection;
+import info.fetter.logstashforwarder.protocol.TCPClient;
+import info.fetter.logstashforwarder.util.AdapterException;
+import org.apache.commons.cli.*;
+import org.apache.log4j.*;
+import org.apache.log4j.spi.RootLogger;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import info.fetter.logstashforwarder.config.ConfigurationManager;
-import info.fetter.logstashforwarder.config.FilesSection;
-import info.fetter.logstashforwarder.protocol.LumberjackClient;
-import info.fetter.logstashforwarder.util.AdapterException;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.spi.RootLogger;
+import static org.apache.log4j.Level.*;
 
 public class Forwarder {
 	private static final String SINCEDB = ".logstash-forwarder-java";
@@ -127,7 +112,8 @@ public class Forwarder {
 				randomServerIndex = random.nextInt(serverList.size());
 				String[] serverAndPort = serverList.get(randomServerIndex).split(":");
 				logger.info("Trying to connect to " + serverList.get(randomServerIndex));
-				adapter = new LumberjackClient(configManager.getConfig().getNetwork().getSslCA(),serverAndPort[0],Integer.parseInt(serverAndPort[1]), networkTimeout);
+                adapter = new TCPClient(configManager.getConfig().getNetwork().getSslCA(),serverAndPort[0],Integer.parseInt(serverAndPort[1]), networkTimeout);
+//                adapter = new LumberjackClient(configManager.getConfig().getNetwork().getSslCA(),serverAndPort[0],Integer.parseInt(serverAndPort[1]), networkTimeout);
 				fileReader.setAdapter(adapter);
 				inputReader.setAdapter(adapter);
 			} catch(Exception ex) {
