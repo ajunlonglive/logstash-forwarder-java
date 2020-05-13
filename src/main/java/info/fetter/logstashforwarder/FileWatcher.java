@@ -236,14 +236,30 @@ public class FileWatcher {
 
 	private void addWildCardFiles(String filesToWatch, Event fields, long deadTime, Multiline multiline, Filter filter) throws Exception {
 		logger.info("Watching wildcard files : " + filesToWatch);
-		String directory = FilenameUtils.getFullPath(filesToWatch);
+		String directory = FilenameUtils.getFullPathNoEndSeparator(filesToWatch);
 		String wildcard = FilenameUtils.getName(filesToWatch);
-		logger.trace("Directory : " + new File(directory).getCanonicalPath() + ", wildcard : " + wildcard);
-		IOFileFilter fileFilter = FileFilterUtils.and(
-				FileFilterUtils.fileFileFilter(),
-				new WildcardFileFilter(wildcard),
-				new LastModifiedFileFilter(deadTime));
-		initializeWatchMap(new File(directory), fileFilter, fields, multiline, filter);
+		if(!directory.endsWith("*")) {
+			logger.trace("Directory : " + new File(directory).getCanonicalPath() + ", wildcard : " + wildcard);
+			IOFileFilter fileFilter = FileFilterUtils.and(
+					FileFilterUtils.fileFileFilter(),
+					new WildcardFileFilter(wildcard),
+					new LastModifiedFileFilter(deadTime));
+			initializeWatchMap(new File(directory), fileFilter, fields, multiline, filter);
+		}else {
+			String subDir = FilenameUtils.getFullPathNoEndSeparator(directory);
+			String wildcardDir = FilenameUtils.getName(directory);
+			logger.trace("SubDirectory : " + new File(subDir).getCanonicalPath() + ", wildcardDir : " + wildcardDir);
+			IOFileFilter dirFilter = FileFilterUtils.and(
+					FileFilterUtils.directoryFileFilter(),
+					new WildcardFileFilter(wildcardDir));
+			IOFileFilter fileFilter = FileFilterUtils.and(
+					FileFilterUtils.fileFileFilter(),
+					new WildcardFileFilter(wildcard),
+					new LastModifiedFileFilter(deadTime));
+			for(File file : FileUtils.listFilesAndDirs(new File(subDir), dirFilter, null)) {
+				initializeWatchMap(file, fileFilter, fields, multiline, filter);
+			}
+		}
 	}
 
 	private void addStdIn(Event fields) {
@@ -383,5 +399,6 @@ public class FileWatcher {
 			logger.warn("Could not load saved states : " + e.getMessage(), e);
 		}
 	}
+	
 
 }
