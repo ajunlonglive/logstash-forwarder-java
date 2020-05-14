@@ -239,7 +239,7 @@ public class FileWatcher {
 		String directory = FilenameUtils.getFullPathNoEndSeparator(filesToWatch);
 		String wildcard = FilenameUtils.getName(filesToWatch);
 		if(!directory.endsWith("*")) {
-			logger.trace("Directory : " + new File(directory).getCanonicalPath() + ", wildcard : " + wildcard);
+			logger.info("Directory : " + new File(directory).getCanonicalPath() + ", wildcard : " + wildcard);
 			IOFileFilter fileFilter = FileFilterUtils.and(
 					FileFilterUtils.fileFileFilter(),
 					new WildcardFileFilter(wildcard),
@@ -248,7 +248,7 @@ public class FileWatcher {
 		}else {
 			String subDir = FilenameUtils.getFullPathNoEndSeparator(directory);
 			String wildcardDir = FilenameUtils.getName(directory);
-			logger.trace("SubDirectory : " + new File(subDir).getCanonicalPath() + ", wildcardDir : " + wildcardDir);
+			logger.info("Directory : " + new File(subDir).getCanonicalPath() + ", wildcardDir : " + wildcardDir);
 			IOFileFilter dirFilter = FileFilterUtils.and(
 					FileFilterUtils.directoryFileFilter(),
 					new WildcardFileFilter(wildcardDir));
@@ -256,8 +256,11 @@ public class FileWatcher {
 					FileFilterUtils.fileFileFilter(),
 					new WildcardFileFilter(wildcard),
 					new LastModifiedFileFilter(deadTime));
-			for(File file : FileUtils.listFilesAndDirs(new File(subDir), dirFilter, null)) {
-				initializeWatchMap(file, fileFilter, fields, multiline, filter);
+			for(File file : FileUtils.listFilesAndDirs(new File(subDir), FileFilterUtils.fileFileFilter(), dirFilter)) {
+				if (file.isDirectory()) {
+					logger.info("SubDirectory : " + file.getCanonicalPath());
+					initializeWatchMap(file, fileFilter, fields, multiline, filter);
+				}
 			}
 		}
 	}
